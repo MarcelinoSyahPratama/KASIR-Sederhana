@@ -77,8 +77,6 @@ Partial Class Form1
         Me.DataGridViewTextBoxColumn6 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.DataGridViewTextBoxColumn5 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Label15 = New System.Windows.Forms.Label()
-        Me.ModalS = New System.Windows.Forms.TextBox()
-        Me.Label16 = New System.Windows.Forms.Label()
         Me.Label17 = New System.Windows.Forms.Label()
         Me.UntungRugi = New System.Windows.Forms.TextBox()
         Me.Label18 = New System.Windows.Forms.Label()
@@ -558,31 +556,11 @@ Partial Class Form1
         Me.Label15.TabIndex = 39
         Me.Label15.Text = "Riwayat Transaksi"
         '
-        'ModalS
-        '
-        Me.ModalS.Enabled = False
-        Me.ModalS.Font = New System.Drawing.Font("Microsoft Sans Serif", 30.0!)
-        Me.ModalS.Location = New System.Drawing.Point(6, 806)
-        Me.ModalS.Name = "ModalS"
-        Me.ModalS.Size = New System.Drawing.Size(295, 53)
-        Me.ModalS.TabIndex = 40
-        Me.ModalS.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
-        '
-        'Label16
-        '
-        Me.Label16.AutoSize = True
-        Me.Label16.Font = New System.Drawing.Font("Microsoft Sans Serif", 20.0!)
-        Me.Label16.Location = New System.Drawing.Point(71, 763)
-        Me.Label16.Name = "Label16"
-        Me.Label16.Size = New System.Drawing.Size(153, 31)
-        Me.Label16.TabIndex = 41
-        Me.Label16.Text = "Modal Awal"
-        '
         'Label17
         '
         Me.Label17.AutoSize = True
         Me.Label17.Font = New System.Drawing.Font("Microsoft Sans Serif", 20.0!)
-        Me.Label17.Location = New System.Drawing.Point(609, 763)
+        Me.Label17.Location = New System.Drawing.Point(535, 763)
         Me.Label17.Name = "Label17"
         Me.Label17.Size = New System.Drawing.Size(180, 31)
         Me.Label17.TabIndex = 43
@@ -592,7 +570,7 @@ Partial Class Form1
         '
         Me.UntungRugi.Enabled = False
         Me.UntungRugi.Font = New System.Drawing.Font("Microsoft Sans Serif", 30.0!)
-        Me.UntungRugi.Location = New System.Drawing.Point(563, 806)
+        Me.UntungRugi.Location = New System.Drawing.Point(489, 806)
         Me.UntungRugi.Name = "UntungRugi"
         Me.UntungRugi.Size = New System.Drawing.Size(292, 53)
         Me.UntungRugi.TabIndex = 42
@@ -640,7 +618,7 @@ Partial Class Form1
         '
         Me.Label20.AutoSize = True
         Me.Label20.Font = New System.Drawing.Font("Microsoft Sans Serif", 20.0!)
-        Me.Label20.Location = New System.Drawing.Point(301, 763)
+        Me.Label20.Location = New System.Drawing.Point(6, 763)
         Me.Label20.Name = "Label20"
         Me.Label20.Size = New System.Drawing.Size(270, 31)
         Me.Label20.TabIndex = 49
@@ -650,7 +628,7 @@ Partial Class Form1
         '
         Me.EstUntung.Enabled = False
         Me.EstUntung.Font = New System.Drawing.Font("Microsoft Sans Serif", 30.0!)
-        Me.EstUntung.Location = New System.Drawing.Point(307, 806)
+        Me.EstUntung.Location = New System.Drawing.Point(12, 806)
         Me.EstUntung.Name = "EstUntung"
         Me.EstUntung.Size = New System.Drawing.Size(250, 53)
         Me.EstUntung.TabIndex = 48
@@ -721,8 +699,6 @@ Partial Class Form1
         Me.Controls.Add(Me.UntungS)
         Me.Controls.Add(Me.Label17)
         Me.Controls.Add(Me.UntungRugi)
-        Me.Controls.Add(Me.Label16)
-        Me.Controls.Add(Me.ModalS)
         Me.Controls.Add(Me.Label15)
         Me.Controls.Add(Me.Riwayat)
         Me.Controls.Add(Me.TambahS)
@@ -802,8 +778,6 @@ Partial Class Form1
     Friend WithEvents TambahS As Button
     Friend WithEvents Riwayat As DataGridView
     Friend WithEvents Label15 As Label
-    Friend WithEvents ModalS As TextBox
-    Friend WithEvents Label16 As Label
     Friend WithEvents Label17 As Label
     Friend WithEvents UntungRugi As TextBox
     Friend WithEvents Label18 As Label
