@@ -1,4 +1,4 @@
-﻿Imports System.IO
+Imports System.IO
 Imports ExcelDataReader
 Imports System.Drawing.Printing
 
@@ -9,11 +9,17 @@ Public Class Form1
     Dim Untung As Integer = 0
     Dim EstiUntung As Integer = 0
 
-    Sub Hitung(HargaBeli, Stok, Keuntungan)
-        Modal += Integer.Parse(HargaBeli) * Integer.Parse(Stok)
-        Untung -= Integer.Parse(HargaBeli) * Integer.Parse(Stok)
-        EstiUntung += Integer.Parse(Keuntungan)
-        ModalS.Text = Modal
+    Sub Hitung()
+        Modal = 0
+        EstiUntung = 0
+        Untung = 0
+        For Each rows As DataGridViewRow In DataGridView1.Rows
+            If Not rows.IsNewRow Then
+                Modal += Integer.Parse(rows.Cells(2).Value) * Integer.Parse(rows.Cells(4).Value)
+                Untung -= Integer.Parse(rows.Cells(2).Value) * Integer.Parse(rows.Cells(4).Value)
+                EstiUntung += Integer.Parse(rows.Cells(6).Value)
+            End If
+        Next
         EstUntung.Text = EstiUntung
         UntungRugi.Text = Untung
     End Sub
@@ -33,6 +39,8 @@ Public Class Form1
         JumlahBeliB.Text = ""
         DiskonB.Text = ""
         TotalHargaB.Text = ""
+        TotalHarga = 0
+        TotalAll.Text = 0
     End Sub
 
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
@@ -88,8 +96,27 @@ Public Class Form1
                                 ' Tambahkan data dari baris kedua dan seterusnya ke DataGridView
                                 For i As Integer = 1 To dataTable.Rows.Count - 1
                                     Dim row As DataRow = dataTable.Rows(i)
-                                    DataGridView1.Rows.Add(row.ItemArray)
-                                    Hitung(row.ItemArray(2), row.ItemArray(4), row.ItemArray(6))
+
+                                    Dim IndexRow As Integer = -1
+                                    For Each rows As DataGridViewRow In DataGridView1.Rows
+                                        If Not rows.IsNewRow Then
+                                            If (rows.Cells(0).Value = row.ItemArray(0)) Then
+                                                IndexRow = rows.Index
+                                            End If
+                                        End If
+                                    Next
+                                    ' Tambahkan kolom ke DataGridView
+                                    If (IndexRow <> -1) Then
+                                        DataGridView1.Rows(IndexRow).Cells(1).Value = row.ItemArray(1)
+                                        DataGridView1.Rows(IndexRow).Cells(2).Value = row.ItemArray(2)
+                                        DataGridView1.Rows(IndexRow).Cells(3).Value = row.ItemArray(3)
+                                        DataGridView1.Rows(IndexRow).Cells(4).Value = row.ItemArray(4)
+                                        DataGridView1.Rows(IndexRow).Cells(5).Value = row.ItemArray(5)
+                                        DataGridView1.Rows(IndexRow).Cells(6).Value = row.ItemArray(6)
+                                    Else
+                                        DataGridView1.Rows.Add(row.ItemArray)
+                                    End If
+                                    Hitung()
                                     InitValueStok()
                                 Next
                             End If
@@ -104,31 +131,25 @@ Public Class Form1
 
     Private Sub TambahS_Click(sender As Object, e As EventArgs) Handles TambahS.Click
         Dim IndexRow As Integer = -1
-        Dim StokOld As Integer = 0
-        Dim EstimasiOld As Integer = 0
         For Each row As DataGridViewRow In DataGridView1.Rows
             If Not row.IsNewRow Then
                 If (row.Cells(0).Value = KodeBarangS.Text) Then
                     IndexRow = row.Index
-                    StokOld = row.Cells(4).Value
-                    EstimasiOld = row.Cells(6).Value
                 End If
             End If
         Next
         ' Tambahkan kolom ke DataGridView
         If (IndexRow <> -1) Then
-            Dim StokNow = Integer.Parse(StokOld) + Integer.Parse(StokS.Text)
-            Dim EstimasiNow = Integer.Parse(EstimasiOld) + Integer.Parse(UntungS.Text)
             DataGridView1.Rows(IndexRow).Cells(1).Value = NamaBarangS.Text
             DataGridView1.Rows(IndexRow).Cells(2).Value = HargaBeliS.Text
             DataGridView1.Rows(IndexRow).Cells(3).Value = HargaJualS.Text
-            DataGridView1.Rows(IndexRow).Cells(4).Value = StokNow
+            DataGridView1.Rows(IndexRow).Cells(4).Value = StokS.Text
             DataGridView1.Rows(IndexRow).Cells(5).Value = DiskonS.Text
-            DataGridView1.Rows(IndexRow).Cells(6).Value = EstimasiNow
+            DataGridView1.Rows(IndexRow).Cells(6).Value = UntungS.Text
         Else
             DataGridView1.Rows.Add(KodeBarangS.Text, NamaBarangS.Text, HargaBeliS.Text, HargaJualS.Text, StokS.Text, DiskonS.Text, UntungS.Text)
         End If
-        Hitung(HargaBeliS.Text, StokS.Text, UntungS.Text)
+        Hitung()
         InitValueStok()
     End Sub
 
@@ -158,24 +179,9 @@ Public Class Form1
                     NamaBarangS.Text = row.Cells(1).Value
                     HargaBeliS.Text = row.Cells(2).Value
                     HargaJualS.Text = row.Cells(3).Value
-                    StokS.Text = "0"
+                    StokS.Text = row.Cells(4).Value
                     DiskonS.Text = row.Cells(5).Value
                     UntungS.Text = row.Cells(6).Value
-                End If
-            End If
-            'Next
-        Next
-    End Sub
-
-    Private Sub DataGridView1_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles DataGridView1.CellValueChanged
-        ' Lakukan tindakan yang diperlukan saat nilai sel berubah
-        For Each row As DataGridViewRow In DataGridView1.Rows
-            'For Each cell As DataGridViewCell In row.Cells
-            If Not row.IsNewRow Then
-                If (ModalS.Text <> "") Then
-                    ModalS.Text = Integer.Parse(ModalS.Text) + Integer.Parse(row.Cells(2).Value)
-                Else
-                    ModalS.Text = 0 + Integer.Parse(row.Cells(2).Value)
                 End If
             End If
             'Next
@@ -220,23 +226,29 @@ Public Class Form1
     End Sub
 
     Private Sub TambahBeli_Click(sender As Object, e As EventArgs) Handles TambahBeli.Click
-        TabelBeli.Rows.Add(KodeBarangB.Text, NamaBarangB.Text, HargaBarangB.Text, JumlahBeliB.Text, DiskonB.Text, TotalHargaB.Text)
+
         TotalHarga += Integer.Parse(TotalHargaB.Text)
         TotalAll.Text = TotalHarga
         Dim DateTime As DateTime = DateTime.Now
-        Riwayat.Rows.Add(DateTime, KodeBarangB.Text, NamaBarangB.Text, HargaBarangB.Text, JumlahBeliB.Text, DiskonB.Text, TotalHargaB.Text)
+
 
         For Each row As DataGridViewRow In DataGridView1.Rows
             If Not row.IsNewRow Then
                 If (row.Cells(0).Value = KodeBarangB.Text) Then
-                    Dim IndexRow As Integer = row.Index
-                    MessageBox.Show(row.Index)
                     Dim Stok As Integer = Integer.Parse(row.Cells(4).Value) - Integer.Parse(JumlahBeliB.Text)
-                    Dim UntungR As Integer = Integer.Parse(row.Cells(6).Value) - Integer.Parse(row.Cells(3).Value) - Integer.Parse(DiskonB.Text)
-                    DataGridView1.Rows(IndexRow).Cells(4).Value = Stok
-                    DataGridView1.Rows(IndexRow).Cells(6).Value = UntungR
-                    Untung += Integer.Parse(TotalHargaB.Text)
-                    UntungRugi.Text = Untung
+                    If (Stok >= 0) Then
+                        Dim IndexRow As Integer = row.Index
+                        'Dim Stok As Integer = Integer.Parse(row.Cells(4).Value) - Integer.Parse(JumlahBeliB.Text)
+                        Dim UntungR As Integer = Integer.Parse(row.Cells(6).Value) - Integer.Parse(row.Cells(3).Value) - Integer.Parse(DiskonB.Text)
+                        DataGridView1.Rows(IndexRow).Cells(4).Value = Stok
+                        'DataGridView1.Rows(IndexRow).Cells(6).Value = UntungR
+                        Untung += Integer.Parse(TotalHargaB.Text)
+                        UntungRugi.Text = Untung
+                        TabelBeli.Rows.Add(KodeBarangB.Text, NamaBarangB.Text, HargaBarangB.Text, JumlahBeliB.Text, DiskonB.Text, TotalHargaB.Text)
+                        Riwayat.Rows.Add(DateTime, KodeBarangB.Text, NamaBarangB.Text, HargaBarangB.Text, JumlahBeliB.Text, DiskonB.Text, TotalHargaB.Text)
+                    Else
+                        MessageBox.Show("Jumlah Beli Melebihi Stok Barang")
+                    End If
                 End If
             End If
         Next
@@ -248,6 +260,8 @@ Public Class Form1
     End Sub
 
     Private Sub UangDiterima_TextChanged(sender As Object, e As EventArgs) Handles UangDiterima.TextChanged
-        Kembalian.Text = Integer.Parse(UangDiterima.Text) - TotalHarga
+        If (UangDiterima.Text <> "") Then
+            Kembalian.Text = Integer.Parse(UangDiterima.Text) - TotalHarga
+        End If
     End Sub
 End Class
